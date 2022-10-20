@@ -1,13 +1,41 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as sys_path;
+import 'package:image_picker/image_picker.dart';
 
 class PhotoInput extends StatefulWidget {
-  const PhotoInput({Key? key}) : super(key: key);
+  const PhotoInput({Key? key, required this.onSetImage}) : super(key: key);
+
+  final Function onSetImage;
 
   @override
   PhotoInputState createState() => PhotoInputState();
 }
 
 class PhotoInputState extends State<PhotoInput> {
+  File? _storedImage;
+
+  void _takePicture() async {
+    final ImagePicker picker = ImagePicker();
+    XFile? imgFile = await picker.pickImage(
+      source: ImageSource.camera,
+      maxWidth: 600,
+    );
+
+    if (imgFile == null) return;
+
+    setState(() {
+      _storedImage = File(imgFile.path);
+    });
+    
+    final appDir = await sys_path.getApplicationDocumentsDirectory();
+    String fileName = path.basename(imgFile.path); 
+    final savedImg = await _storedImage!.copy('${appDir.path}/$fileName');
+
+    widget.onSetImage(savedImg);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -22,14 +50,23 @@ class PhotoInputState extends State<PhotoInput> {
             ),
           ),
           alignment: Alignment.center,
-          child: const Text('No image taken'),
+          child: _storedImage != null
+              ? Image.file(
+                  _storedImage as File,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                )
+              : const Text(
+                  'No image taken',
+                  textAlign: TextAlign.center,
+                ),
         ),
         const SizedBox(
           width: 10,
         ),
         Expanded(
           child: TextButton.icon(
-            onPressed: () {},
+            onPressed: _takePicture,
             icon: const Icon(Icons.camera),
             label: const Text('Take Picture'),
           ),

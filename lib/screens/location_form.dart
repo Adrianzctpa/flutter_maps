@@ -1,4 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_nativeresources/providers/cool_locations.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:flutter_nativeresources/components/photo_input.dart';
 
 class LocationForm extends StatefulWidget {
@@ -10,11 +14,21 @@ class LocationForm extends StatefulWidget {
 
 class LocationFormState extends State<LocationForm> {
   final _titleController = TextEditingController();
+  File? _photo;
+
+  void _takePhoto(File photo) {
+    setState(() {
+      _photo = photo;
+    });
+  }
 
   void _submitForm() {
-    if (_titleController.text.isEmpty) {
+    if (_titleController.text.isEmpty || _photo == null) {
       return;
     }
+
+    Provider.of<CoolLocations>(context, listen: false).addLocation(_titleController.text, _photo as File);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -39,7 +53,7 @@ class LocationFormState extends State<LocationForm> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const PhotoInput(),
+                    PhotoInput(onSetImage: _takePhoto),
                   ]
                 ),
               ),
