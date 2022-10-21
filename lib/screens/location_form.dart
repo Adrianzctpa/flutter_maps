@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_nativeresources/providers/cool_locations.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:flutter_nativeresources/components/location_input.dart';
 import 'package:flutter_nativeresources/components/photo_input.dart';
 
 class LocationForm extends StatefulWidget {
@@ -54,6 +54,10 @@ class LocationFormState extends State<LocationForm> {
                       height: 10,
                     ),
                     PhotoInput(onSetImage: _takePhoto),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                   const LocationInput() 
                   ]
                 ),
               ),
