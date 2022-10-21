@@ -1,9 +1,23 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_nativeresources/utils/db_util.dart';
 import 'package:flutter_nativeresources/models/location.dart';
 
 class CoolLocations with ChangeNotifier {
-  final List<Location> _items = [];
+  List<Location> _items = [];
+
+  Future<void> loadLocations() async {
+    final dataList = await DBUtil().getData('coolLocations');
+    _items = dataList.map(
+      (i) => Location(
+        id: i['id'],
+        title: i['title'],
+        location: null,
+        photo: File(i['image']),
+      )
+    ).toList();
+    notifyListeners();
+  }
 
   List<Location> get items {
     return [..._items];
@@ -21,15 +35,20 @@ class CoolLocations with ChangeNotifier {
     final loc = Location(
       id: DateTime.now().toString(),
       title: title,
-      location: const LocationData(
-        latitude: 0,
-        longitude: 0,
-        address: '',
-      ),
+      location: null,
       photo: img,
     );
 
     _items.add(loc);
+
+    DBUtil().insert(
+      'coolLocations',
+      {
+        'id': loc.id,
+        'title': loc.title,
+        'image': loc.photo.path,
+      },
+    );
     notifyListeners();
   } 
 }

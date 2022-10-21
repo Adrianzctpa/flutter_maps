@@ -20,22 +20,27 @@ class LocationListScreen extends StatelessWidget {
           )
         ]
       ),
-      body: Consumer<CoolLocations>(
-        builder: (ctx, prov, ch) => prov.itemsCount == 0
-            ? ch!
-            : ListView.builder(
-                itemCount: prov.itemsCount,
-                itemBuilder: (ctx, i) => ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: FileImage(prov.getItem(i).photo),
+      body: FutureBuilder(
+        future: Provider.of<CoolLocations>(context, listen: false).loadLocations(),
+        builder: (context, snapshot) => snapshot.connectionState == ConnectionState.waiting 
+        ? const Center(child: CircularProgressIndicator())
+        : Consumer<CoolLocations>(
+          builder: (ctx, prov, ch) => prov.itemsCount == 0
+              ? ch!
+              : ListView.builder(
+                  itemCount: prov.itemsCount,
+                  itemBuilder: (ctx, i) => ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: FileImage(prov.getItem(i).photo),
+                    ),
+                    title: Text(prov.getItem(i).title),
+                    onTap: () {
+                      // Go to detail page ...
+                    },
                   ),
-                  title: Text(prov.getItem(i).title),
-                  onTap: () {
-                    // Go to detail page ...
-                  },
                 ),
-              ),
-        child: const Text('Location List'),
+          child: const Text('Location List'),
+        ),
       ),
     );
   }

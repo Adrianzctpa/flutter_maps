@@ -15,7 +15,7 @@ class LocationData {
 class Location {
   final String id;
   final String title;
-  final LocationData location;
+  final LocationData? location;
   final File photo;
 
   const Location({
