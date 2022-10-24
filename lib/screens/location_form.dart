@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_nativeresources/providers/cool_locations.dart';
 import 'package:flutter_nativeresources/components/location_input.dart';
@@ -15,6 +16,7 @@ class LocationForm extends StatefulWidget {
 class LocationFormState extends State<LocationForm> {
   final _titleController = TextEditingController();
   File? _photo;
+  LatLng? _pickedLocation;
 
   void _takePhoto(File photo) {
     setState(() {
@@ -22,12 +24,19 @@ class LocationFormState extends State<LocationForm> {
     });
   }
 
-  void _submitForm() {
-    if (_titleController.text.isEmpty || _photo == null) {
-      return;
-    }
+  void _selectLocation(LatLng pos) {
+    setState(() {
+      _pickedLocation = pos;
+    });
+  }
 
-    Provider.of<CoolLocations>(context, listen: false).addLocation(_titleController.text, _photo as File);
+  bool _isValid() {
+    return _titleController.text.isNotEmpty && _photo != null && _pickedLocation != null;
+  }
+
+  void _submitForm() {
+    if (!_isValid()) return;
+    Provider.of<CoolLocations>(context, listen: false).addLocation(_titleController.text, _photo as File, _pickedLocation as LatLng);
     Navigator.of(context).pop();
   }
 
@@ -57,14 +66,14 @@ class LocationFormState extends State<LocationForm> {
                     const SizedBox(
                       height: 10,
                     ),
-                   const LocationInput() 
+                    LocationInput(onSelectLocation: _selectLocation) 
                   ]
                 ),
               ),
             ),
           ),
           ElevatedButton.icon(
-            onPressed: _submitForm,
+            onPressed: _isValid() ? _submitForm : null,
             icon: const Icon(Icons.add_location),
             label: const Text('Add Location'),
             style: ButtonStyle(

@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nativeresources/utils/db_util.dart';
+import 'package:flutter_nativeresources/utils/location_util.dart';
 import 'package:flutter_nativeresources/models/location.dart';
 
 class CoolLocations with ChangeNotifier {
@@ -12,7 +14,11 @@ class CoolLocations with ChangeNotifier {
       (i) => Location(
         id: i['id'],
         title: i['title'],
-        location: null,
+        location: LocationData(
+          latitude: i['lat'],
+          longitude: i['lng'],
+          address: i['address'],
+        ),
         photo: File(i['image']),
       )
     ).toList();
@@ -31,11 +37,17 @@ class CoolLocations with ChangeNotifier {
     return _items[index];
   }
 
-  void addLocation(String title, File img) {
+  Future<void> addLocation(String title, File img, LatLng pos) async {
+    String address = await LocationUtil.getAddressFrom(pos);
+    
     final loc = Location(
       id: DateTime.now().toString(),
       title: title,
-      location: null,
+      location: LocationData(
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        address: address,
+      ),
       photo: img,
     );
 
@@ -47,6 +59,9 @@ class CoolLocations with ChangeNotifier {
         'id': loc.id,
         'title': loc.title,
         'image': loc.photo.path,
+        'lat': pos.latitude,
+        'lng': pos.longitude,
+        'address': address
       },
     );
     notifyListeners();

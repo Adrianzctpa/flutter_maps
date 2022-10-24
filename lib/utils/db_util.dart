@@ -17,7 +17,7 @@ class DBUtil {
     final joinedPath = path.join(dbPath, 'cool_locations.db');
     return sql.openDatabase(joinedPath, version: 1, onCreate: (db, version) async {
       await db.execute(
-        'CREATE TABLE coolLocations (id TEXT PRIMARY KEY, title TEXT, image TEXT)',
+        'CREATE TABLE coolLocations (id TEXT PRIMARY KEY, title TEXT, image TEXT, lat REAL, lng REAL, address TEXT)',
       );
     });
   }

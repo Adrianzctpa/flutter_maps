@@ -34,12 +34,13 @@ class LocationListScreen extends StatelessWidget {
                       backgroundImage: FileImage(prov.getItem(i).photo),
                     ),
                     title: Text(prov.getItem(i).title),
+                    subtitle: Text(prov.getItem(i).location!.address as String),
                     onTap: () {
                       // Go to detail page ...
                     },
                   ),
                 ),
-          child: const Text('Location List'),
+          child: const Center(child: Text('No locations')),
         ),
       ),
     );
