@@ -36,7 +36,10 @@ class LocationListScreen extends StatelessWidget {
                     title: Text(prov.getItem(i).title),
                     subtitle: Text(prov.getItem(i).location!.address as String),
                     onTap: () {
-                      // Go to detail page ...
+                      Navigator.of(context).pushNamed(
+                        Constraints.locationDetail,
+                        arguments: prov.getItem(i),
+                      );
                     },
                   ),
                 ),

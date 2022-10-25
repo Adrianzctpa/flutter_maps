@@ -57,7 +57,12 @@ class LocationFormState extends State<LocationForm> {
                   children: [
                     TextField(
                       controller: _titleController,
-                      decoration: const InputDecoration(labelText: 'Title'),
+                      decoration: const InputDecoration(
+                        labelText: 'Title',
+                      ),
+                      onChanged: (text) {
+                        setState(() {});
+                      },
                     ),
                     const SizedBox(
                       height: 10,

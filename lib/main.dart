@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_nativeresources/providers/cool_locations.dart';
 import 'package:flutter_nativeresources/screens/location_list_screen.dart';
+import 'package:flutter_nativeresources/screens/location_detail_screen.dart';
 import 'package:flutter_nativeresources/screens/location_form.dart';
 import 'package:flutter_nativeresources/utils/constraints.dart';
 
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         home: const LocationListScreen(),
         routes: {
           Constraints.locationForm: (context) => const LocationForm(),
+          Constraints.locationDetail: (context) => const LocationDetailScreen(),
         },
       ),
     );

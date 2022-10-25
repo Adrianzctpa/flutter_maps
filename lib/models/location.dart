@@ -1,4 +1,5 @@
 import 'dart:io'; 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationData {
   final double latitude;
@@ -10,6 +11,10 @@ class LocationData {
     required this.longitude,
     this.address,
   });
+
+  LatLng toLatLng() {
+    return LatLng(latitude, longitude);
+  }
 }
 
 class Location {
